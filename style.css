@@ -1,0 +1,119 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+#heading {
+    text-align: center;
+    font-size: 3rem;
+    margin: 2rem;
+    color: #c65151;
+}
+
+#formDiv {
+    /* border: 2px solid red; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+#formDiv input {
+    width: 25rem;
+    padding: 0.5rem;
+    margin: 1rem;
+}
+
+#formDiv button {
+    color: white;
+    width: 25rem;
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 5rem;
+    padding: 0.8rem;
+    border-radius: 2rem;
+    background: #00b9ff;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.floor {
+    border: 2px solid #3a6235;
+    background: #CED4CA;
+    height: 20rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.floorInfo {
+    /* border: 2px solid rgb(91, 143, 255); */
+    background: #3a6235;
+    height: 20rem;
+    width: 15rem;
+    text-align: center;
+}
+
+.floor p {
+    margin: 2rem;
+    font-size: 2rem;
+    color: white;
+}
+
+.lifts {
+    height: 100%;
+    width: 8rem;
+    border: 2px solid black;
+    overflow: hidden;
+}
+
+.liftDoor {
+    border: 2px solid rgb(83, 83, 83);
+    height: 100%;
+    width: 50%;
+    background-color: grey;
+    display: inline-block;
+}
+
+.up_btn,
+.down_btn {
+    width: 8rem;
+    font-size: 1.6rem;
+    padding: 0.8rem 0;
+    border: none;
+    outline: none;
+    color: black;
+    border-radius: 2rem;
+    margin: 1rem;
+    background: #ffffff;
+    cursor: pointer;
+    border: 2px solid white;
+}
+
+.up_btn:hover,
+.down_btn:hover {
+    color: white;
+    background: #3a6235;
+    border: 2px solid white;
+}
+
+/* #myLift {
+    animation-name: moveLift;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes moveLift {
+    0% {
+        transform: translateY(0rem);
+    }
+
+    100% {
+        transform: translateY(-20rem);
+    }
+} */
