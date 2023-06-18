@@ -23,17 +23,9 @@ const moveLift = (floor, liftNum, liftPos, isLiftBusy, queue) => {
     const lifts = Array.from(document.querySelectorAll('.lifts'));
     const liftDoor = Array.from(document.querySelectorAll('.liftDoor'));
 
-    // const checkAvailablity = isLiftBusy.every((lift) => {
-    //     return lift === true;
-    // })
-    // if (checkAvailablity) {
-    //     console.log(`checkAvailablity is true`);
-    //     alert('Lifts are busy, please wait!')
-    //     return;
-    // }
     isLiftBusy[liftNum] = true;
 
-    lifts[liftNum].style.transform = `translateY(-${floor * 20}rem)`
+    lifts[liftNum].style.transform = `translateY(-${floor * 16}rem)`
     lifts[liftNum].style.transition = 'transform 2s ease-in-out 0s';
 
     liftDoor[2 * liftNum].style.transform = `translateX(-95%)`
@@ -49,15 +41,29 @@ const moveLift = (floor, liftNum, liftPos, isLiftBusy, queue) => {
         liftDoor[2 * liftNum + 1].style.transform = `translateX(0%)`
         liftDoor[2 * liftNum + 1].style.transition = 'all 2s ease-in-out 1s';
 
-        // setTimeout(() => {
-        //     console.log(queue);
-        // }, 3000)
-
         setTimeout(() => {
             isLiftBusy[liftNum] = false;
         }, 4000)
     }, 4000)
+
     liftPos[liftNum] = +floor;
+}
+
+function nearestLift(calledFloor, liftPos, isLiftBusy) {
+    let diff = [];
+    for (let pos of liftPos)
+        diff.push(Math.abs(pos - (+(calledFloor))))   // array containing distance from calledFloor
+    // console.log(`diff ${diff}`);
+
+    let mini = 100, ind = -1;
+    for (let d = 0; d < diff.length; d++) {
+        if (diff[d] < mini && isLiftBusy[d] !== true) {
+            mini = diff[d];
+            ind = d;
+        }
+        else continue;
+    }
+    return ind;
 }
 
 function callLift(i, totalFloors, liftPos, isLiftBusy) {
@@ -69,68 +75,39 @@ function callLift(i, totalFloors, liftPos, isLiftBusy) {
             btn.addEventListener('click', () => {
                 const calledFloor = `${totalFloors - id}`;
 
-                // queue.push(+calledFloor);
-
                 if (liftPos[0] === 0) {
                     if (isLiftBusy[0] === false)
                         moveLift(calledFloor, 0, liftPos, isLiftBusy);
                 }
                 else {
-                    // console.log(`moving another`);
-                    let diff = [];
-                    for (let pos of liftPos)
-                        diff.push(Math.abs(pos - (+(calledFloor))))   // array containing distance from calledFloor
-                    // console.log(`diff ${diff}`);
-
-                    let mini = 100, ind = -1;
-                    for (let d = 0; d < diff.length; d++) {
-                        if (diff[d] < mini && isLiftBusy[d] !== true) {
-                            mini = diff[d];
-                            ind = d;
-                        }
-                        else continue;
-                    }
+                    let ind = nearestLift(calledFloor, liftPos, isLiftBusy);
 
                     if (isLiftBusy[ind] === false)
                         moveLift(calledFloor, ind, liftPos, isLiftBusy);
                     else {
-                        alert(`Lifts are busy. Please wait!`)
+                        alert(`Lifts are busy. Please wait! it will come to you`);
                         queue.push(calledFloor)
+
+                        let timeout = setInterval(() => {
+                            let ankit = isLiftBusy.some((lift) => {
+                                return lift === false
+                            })
+                            if (ankit && queue.length > 0) {
+                                let ind = nearestLift(calledFloor, liftPos, isLiftBusy);
+
+                                moveLift(calledFloor, ind, liftPos, isLiftBusy);
+                                queue.shift();
+                            }
+                        }, 500)
+                        if (queue.length === 0)
+                            clearInterval(timeout)
                     }
 
-                    // if (queue.length > 0) {
-                    //     let whichLift;
-                    //     setTimeout(() => {
-                    //         for (let i of isLiftBusy) {
-                    //             console.log(i);
-                    //             if (i === false)
-                    //                 whichLift = i;
-                    //         }
-                    //         console.log(whichLift);
-                    //         // moveLift(queue[0], whichLift, liftPos, isLiftBusy, queue)
-                    //         queue.shift();
-                    //     }, 10000)
-                    // }
-
-                    // let lift = Number.NEGATIVE_INFINITY;
-                    // function queueListener() {
-                    //     for (i of isLiftBusy) {
-                    //         if (i === false) {
-                    //             lift = i;
-                    //         }
-                    //     }
-                    //     setTimeout(queueListener, 1000);
-
-                    // }
-                    // console.log(lift)
-                    // setTimeout(queueListener, 1000);
-
-                    // console.log(`queue = ${queue}`);
+                    console.log(`queue = ${queue}`);
                 }
             })
         }
     })
-
 
     down_btn.forEach((btn, id) => {
         if (i == id) {
@@ -142,25 +119,30 @@ function callLift(i, totalFloors, liftPos, isLiftBusy) {
                         moveLift(calledFloor, 0, liftPos, isLiftBusy);
                 }
                 else {
-                    let diff = [];
-                    for (let y of liftPos)
-                        diff.push(Math.abs(y - (+(calledFloor))))
+                    let ind = nearestLift(calledFloor, liftPos, isLiftBusy);
 
-                    let mini = 100, ind = -1;
-                    for (let d = 0; d < diff.length; d++) {
-                        if (diff[d] < mini && isLiftBusy[d] !== true) {
-                            mini = diff[d];
-                            ind = d;
-                        }
-                        else continue;
-                    }
                     if (isLiftBusy[ind] === false)
                         moveLift(calledFloor, ind, liftPos, isLiftBusy);
                     else {
-                        alert(`Lifts are busy. Please wait!`)
+                        alert(`Lifts are busy. Please wait! it will come to you`);
                         queue.push(calledFloor)
+
+                        let timeout = setInterval(() => {
+                            let ankit = isLiftBusy.some((lift) => {
+                                return lift === false
+                            })
+                            if (ankit && queue.length > 0) {
+                                let ind = nearestLift(calledFloor, liftPos, isLiftBusy);
+
+                                moveLift(calledFloor, ind, liftPos, isLiftBusy);
+                                queue.shift();
+                            }
+                        }, 500)
+                        if (queue.length === 0)
+                            clearInterval(timeout)
                     }
                 }
+                console.log(`queue = ${queue}`);
             })
         }
     })
@@ -169,18 +151,20 @@ function callLift(i, totalFloors, liftPos, isLiftBusy) {
 const createFloor = (totalFloors, totalLifts) => {
     let liftDiv = document.getElementById('liftDiv')
     liftDiv.innerHTML = '';
+    queue = [];
 
     let liftPos = Array(+totalLifts).fill(0);
     let isLiftBusy = Array(+totalLifts).fill(false);
 
+    let floorInfo, floorNum, upBtn, downBtn;
 
     for (var i = 0; i <= totalFloors; i++) {
         let floor = document.createElement('div')
 
-        let floorInfo = document.createElement('div')
-        let floorNum = document.createElement('p')
-        let upBtn = document.createElement('button')
-        let downBtn = document.createElement('button')
+        floorInfo = document.createElement('div')
+        floorNum = document.createElement('p')
+        upBtn = document.createElement('button')
+        downBtn = document.createElement('button')
 
         floor.setAttribute('class', 'floor')
         floorInfo.setAttribute('class', 'floorInfo')
@@ -188,18 +172,16 @@ const createFloor = (totalFloors, totalLifts) => {
         downBtn.setAttribute('class', 'down_btn')
 
         floorNum.innerHTML = `Floor ${totalFloors - i}`
-        upBtn.innerHTML = `Up`
-        downBtn.innerHTML = `Down`
+        upBtn.innerHTML = `▲`
+        downBtn.innerHTML = `▼`
 
         liftDiv.appendChild(floor)
         floor.appendChild(floorInfo)
-        floorInfo.append(floorNum, upBtn, downBtn);
+        floorInfo.append(upBtn, floorNum, downBtn);
 
         if (i == totalFloors) {
-            floor.setAttribute('id', 'groundFloor')
-            setTimeout(() => {
-                addLifts(totalLifts)
-            }, 1000)
+            floor.setAttribute('id', 'groundFloor');
+            addLifts(totalLifts);            // ADDING LIFTS TO THE GROUND FLOOR
         }
 
         // CALLING LIFT
@@ -222,18 +204,4 @@ startBtn.addEventListener('click', (e) => {
     createFloor(floorVal, liftVal)
 })
 
- // const dynamicKeyframes = `
-    // @keyframes myAnimation {
-    //       from { transform: translateY(0); }
-    //       to { transform: translateY(-${floor * 20}rem); }
-    //     }`;
-
-    // const styleSheet = document.createElement('style');
-    // styleSheet.innerHTML = dynamicKeyframes;
-    // document.head.appendChild(styleSheet);
-
-    // Apply animation styles
-    // lifts[liftNum].style.animationName = 'myAnimation';
-    // lifts[liftNum].style.animationDuration = '2.5s';
-    // lifts[liftNum].style.animationFillMode = 'forwards';
 
