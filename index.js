@@ -200,6 +200,9 @@ startBtn.addEventListener('click', (e) => {
     if (floorVal === '' || liftVal === '') {
         alert('Please enter the details!')
         return;
+    } else if (floorVal < 1 || liftVal < 1) {
+        alert('Please enter valid details!')
+        return;
     }
     createFloor(floorVal, liftVal)
 })
