@@ -17,7 +17,7 @@ const addLifts = (totalLifts) => {
 
 let queue = [];
 
-const moveLift = (floor, liftNum, liftPos, isLiftBusy, queue) => {
+const moveLift = (floor, liftNum, liftPos, isLiftBusy) => {
     // console.log(isLiftBusy);
 
     const lifts = Array.from(document.querySelectorAll('.lifts'));
@@ -25,11 +25,14 @@ const moveLift = (floor, liftNum, liftPos, isLiftBusy, queue) => {
 
     isLiftBusy[liftNum] = true;
 
-    lifts[liftNum].style.transform = `translateY(-${floor * 16}rem)`
-    lifts[liftNum].style.transition = 'transform 2s ease-in-out 0s';
+    let height = document.querySelectorAll('.floor')[0].offsetHeight;
+    // console.log(height);
+
+    lifts[liftNum].style.transform = `translateY(-${floor * height / 10}rem)`
+    lifts[liftNum].style.transition = 'transform 2.5s ease-in-out 0s';
 
     liftDoor[2 * liftNum].style.transform = `translateX(-95%)`
-    liftDoor[2 * liftNum].style.transition = 'all 2s ease-in-out 2s';
+    liftDoor[2 * liftNum].style.transition = 'all 2.5s ease-in-out 2s';
 
     liftDoor[2 * liftNum + 1].style.transform = `translateX(95%)`
     liftDoor[2 * liftNum + 1].style.transition = 'all 2s ease-in-out 2s';
@@ -43,13 +46,13 @@ const moveLift = (floor, liftNum, liftPos, isLiftBusy, queue) => {
 
         setTimeout(() => {
             isLiftBusy[liftNum] = false;
-        }, 4000)
+        }, 4300)
     }, 4000)
 
     liftPos[liftNum] = +floor;
 }
 
-function nearestLift(calledFloor, liftPos, isLiftBusy) {
+function nearestFreeLift(calledFloor, liftPos, isLiftBusy) {
     let diff = [];
     for (let pos of liftPos)
         diff.push(Math.abs(pos - (+(calledFloor))))   // array containing distance from calledFloor
@@ -57,7 +60,7 @@ function nearestLift(calledFloor, liftPos, isLiftBusy) {
 
     let mini = 100, ind = -1;
     for (let d = 0; d < diff.length; d++) {
-        if (diff[d] < mini && isLiftBusy[d] !== true) {
+        if (diff[d] < mini && isLiftBusy[d] === false) {
             mini = diff[d];
             ind = d;
         }
@@ -80,23 +83,25 @@ function callLift(i, totalFloors, liftPos, isLiftBusy) {
                         moveLift(calledFloor, 0, liftPos, isLiftBusy);
                 }
                 else {
-                    let ind = nearestLift(calledFloor, liftPos, isLiftBusy);
+                    let ind = nearestFreeLift(calledFloor, liftPos, isLiftBusy);
 
                     if (isLiftBusy[ind] === false)
                         moveLift(calledFloor, ind, liftPos, isLiftBusy);
                     else {
-                        alert(`Lifts are busy. Please wait! it will come to you`);
-                        queue.push(calledFloor)
+                        // alert(`Lifts are busy. Please wait! it will come to you`);
+                        if (!queue.includes(calledFloor))
+                            queue.push(calledFloor)
 
                         let timeout = setInterval(() => {
                             let ankit = isLiftBusy.some((lift) => {
                                 return lift === false
                             })
                             if (ankit && queue.length > 0) {
-                                let ind = nearestLift(calledFloor, liftPos, isLiftBusy);
+                                let ind = nearestFreeLift(queue[0], liftPos, isLiftBusy);
 
-                                moveLift(calledFloor, ind, liftPos, isLiftBusy);
+                                moveLift(queue[0], ind, liftPos, isLiftBusy);
                                 queue.shift();
+                                // console.log(queue);
                             }
                         }, 500)
                         if (queue.length === 0)
@@ -119,22 +124,23 @@ function callLift(i, totalFloors, liftPos, isLiftBusy) {
                         moveLift(calledFloor, 0, liftPos, isLiftBusy);
                 }
                 else {
-                    let ind = nearestLift(calledFloor, liftPos, isLiftBusy);
+                    let ind = nearestFreeLift(calledFloor, liftPos, isLiftBusy);
 
                     if (isLiftBusy[ind] === false)
                         moveLift(calledFloor, ind, liftPos, isLiftBusy);
                     else {
-                        alert(`Lifts are busy. Please wait! it will come to you`);
-                        queue.push(calledFloor)
+                        // alert(`Lifts are busy. Please wait! it will come to you`);
+                        if (!queue.includes(calledFloor))
+                            queue.push(calledFloor)
 
                         let timeout = setInterval(() => {
                             let ankit = isLiftBusy.some((lift) => {
                                 return lift === false
                             })
                             if (ankit && queue.length > 0) {
-                                let ind = nearestLift(calledFloor, liftPos, isLiftBusy);
+                                let ind = nearestFreeLift(queue[0], liftPos, isLiftBusy);
 
-                                moveLift(calledFloor, ind, liftPos, isLiftBusy);
+                                moveLift(queue[0], ind, liftPos, isLiftBusy);
                                 queue.shift();
                             }
                         }, 500)
