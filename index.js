@@ -1,6 +1,10 @@
 const addLifts = (totalLifts) => {
     const ground = document.getElementById('groundFloor')
 
+    // const liftWrapper = document.createElement('div');
+    // ground.appendChild(liftWrapper);
+    // liftWrapper.setAttribute('id', 'liftWrapper')
+
     for (let i = 0; i < totalLifts; i++) {
         const lifts = document.createElement('div');
         const liftDoor1 = document.createElement('span');
@@ -18,36 +22,41 @@ const addLifts = (totalLifts) => {
 let queue = [];
 
 const moveLift = (floor, liftNum, liftPos, isLiftBusy) => {
-    // console.log(isLiftBusy);
-
     const lifts = Array.from(document.querySelectorAll('.lifts'));
     const liftDoor = Array.from(document.querySelectorAll('.liftDoor'));
 
     isLiftBusy[liftNum] = true;
 
     let height = document.querySelectorAll('.floor')[0].offsetHeight;
-    // console.log(height);
+
+    let time = `${Math.abs(floor - liftPos[liftNum]) * 2}`
 
     lifts[liftNum].style.transform = `translateY(-${floor * height / 10}rem)`
-    lifts[liftNum].style.transition = 'transform 2.5s ease-in-out 0s';
+    lifts[liftNum].style.transition = `transform ${time}s ease-in-out 0s`;
 
-    liftDoor[2 * liftNum].style.transform = `translateX(-95%)`
-    liftDoor[2 * liftNum].style.transition = 'all 2.5s ease-in-out 2s';
-
-    liftDoor[2 * liftNum + 1].style.transform = `translateX(95%)`
-    liftDoor[2 * liftNum + 1].style.transition = 'all 2s ease-in-out 2s';
+    // console.log((+time + 2) * 1000);
 
     setTimeout(() => {
+        console.log(`lift open`);
+        liftDoor[2 * liftNum].style.transform = `translateX(-95%)`
+        liftDoor[2 * liftNum].style.transition = `all 2s ease-in-out 1s`;
+
+        liftDoor[2 * liftNum + 1].style.transform = `translateX(95%)`
+        liftDoor[2 * liftNum + 1].style.transition = `all 2s ease-in-out 1s`;
+    }, +time * 1000 + 500)
+
+    setTimeout(() => {
+        console.log(`lift close`);
         liftDoor[2 * liftNum].style.transform = `translateX(0%)`
-        liftDoor[2 * liftNum].style.transition = 'all 2s ease-in-out 1s';
+        liftDoor[2 * liftNum].style.transition = `all 2s ease-in-out 1s`;
 
         liftDoor[2 * liftNum + 1].style.transform = `translateX(0%)`
-        liftDoor[2 * liftNum + 1].style.transition = 'all 2s ease-in-out 1s';
+        liftDoor[2 * liftNum + 1].style.transition = `all 2s ease-in-out 1s`;
 
         setTimeout(() => {
             isLiftBusy[liftNum] = false;
-        }, 4300)
-    }, 4000)
+        }, 2500)
+    }, (+time + 3.5) * 1000)
 
     liftPos[liftNum] = +floor;
 }
@@ -107,7 +116,6 @@ function callLift(i, totalFloors, liftPos, isLiftBusy) {
                         if (queue.length === 0)
                             clearInterval(timeout)
                     }
-
                     console.log(`queue = ${queue}`);
                 }
             })
@@ -207,7 +215,11 @@ startBtn.addEventListener('click', (e) => {
         alert('Please enter the details!')
         return;
     } else if (floorVal < 1 || liftVal < 1) {
-        alert('Please enter valid details!')
+        alert('Please enter valid details!');
+        return;
+    }
+    else if (liftVal > floorVal) {
+        alert('Number of lifts can not be greater than number of floors!');
         return;
     }
     createFloor(floorVal, liftVal)

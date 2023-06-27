@@ -23,6 +23,10 @@ html {
     margin-top: 2rem;
 }
 
+label {
+    font-size: 1.8rem;
+}
+
 #formDiv input {
     width: 25rem;
     padding: 0.5rem;
@@ -75,7 +79,7 @@ html {
     width: 8rem;
     border: 2px solid black;
     overflow: hidden;
-    z-index: 100;
+    z-index: 5;
 }
 
 .liftDoor {
@@ -107,6 +111,10 @@ html {
 }
 
 @media screen and (max-width: 480px) {
+    label {
+        font-size: 1.5rem;
+    }
+
     .floorInfo {
         height: 12rem;
         width: 7rem;
@@ -136,6 +144,6 @@ html {
         flex-shrink: 0;
         display: inline-block;
         margin-left: 10px;
-        z-index: 200;
+        /* z-index: 5; */
     }
 }
