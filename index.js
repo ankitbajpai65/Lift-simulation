@@ -163,6 +163,7 @@ function callLift(i, totalFloors, liftPos, isLiftBusy) {
 }
 
 const createFloor = (totalFloors, totalLifts) => {
+    console.log(window.clientHeight);
     let liftDiv = document.getElementById('liftDiv')
     liftDiv.innerHTML = '';
     queue = [];
@@ -211,6 +212,8 @@ startBtn.addEventListener('click', (e) => {
     let floorVal = document.getElementById(`floorVal`).value;
     let liftVal = document.getElementById(`liftVal`).value;
 
+    console.log(floorVal, liftVal);
+
     if (floorVal === '' || liftVal === '') {
         alert('Please enter the details!')
         return;
@@ -218,10 +221,27 @@ startBtn.addEventListener('click', (e) => {
         alert('Please enter valid details!');
         return;
     }
-    else if (liftVal > floorVal) {
+    else if (Number(liftVal) > 10) {
+        alert('Number of lifts can not be greater than 10!');
+        return;
+    }
+    else if (Number(liftVal) > Number(floorVal)) {
         alert('Number of lifts can not be greater than number of floors!');
         return;
     }
+    else if (window.innerWidth < 300 && Number(liftVal) > 4) {
+        alert('Number of lifts can not be greater than 4!');
+        return;
+    }
+    else if (window.innerWidth < 400 && Number(liftVal) > 5) {
+        alert('Number of lifts can not be greater than 5!');
+        return;
+    }
+    else if (window.innerWidth < 500 && Number(liftVal) > 6) {
+        alert('Number of lifts can not be greater than 6!');
+        return;
+    }
+
     createFloor(floorVal, liftVal)
 })
 
